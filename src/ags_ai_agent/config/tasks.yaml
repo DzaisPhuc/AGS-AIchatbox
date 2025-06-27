@@ -1,0 +1,107 @@
+collect_customer_requirements_task:
+  description: >
+    Your primary goal is to have a detailed conversation to collect ALL B2B agricultural trade requirements, actively using milvus tool to compare against customer requests and negotiate terms.
+
+    **You MUST systematically go through and gather/confirm information for EACH of the following requirements, one primary question at a time, until all are addressed and agreed upon:**
+    List of requirements:
+    1) Product Specifications (type, quality, grade - confirm against customer's initial statement and your product)
+    2) Certifications (negotiate if mismatch with your product's certifications from PDFs)
+    3) Shelf Life (negotiate if mismatch, explain reasons from product nature)
+    4) INCOTERM
+    5) Order Volume
+    6. Packaging Requirements (negotiate if mismatch with standard packaging from PDFs)
+    7) Payment Terms & Methods
+    8) Target Price (negotiate if mismatch, aim for feasible price based on your product)
+
+    **FOR EVERY CUSTOMER INTERACTION:**
+    1. ALWAYS use "Milvus Knowledge Search" to find relevant information about their question/statement
+    2. Provide helpful, relevant information from your knowledge base
+    3. Then ask for the next unaddressed requirement
+
+    Interaction Flow:
+    - Analyze the customer's message. Compare their stated requirements (product specs, certifications, shelf life, INCOTERM, volume, packaging, payment, price) against the product details in your PDF knowledge base.
+    - **If there are discrepancies (e.g., customer wants Organic, but product is not; customer wants 24-month shelf life, but product is 12-month):**
+        1. Clearly state your product's actual specification for each point of difference, referencing your knowledge base (e.g., "Our pistachio butter is not Organic certified and has a shelf life of 12 months according to our specifications.").
+        2. Explain limitations if possible (e.g., "The 12-month shelf life is due to its 100% natural composition without preservatives.").
+        3. Ask the customer if they can accept your standard specification or propose a compromise (e.g., "Would you be able to proceed without Organic certification if other requirements are met?").
+        4. For price, if their target is too low, state it's not feasible and propose a counter-offer. You can say "Let me check with our supplier" before making a counter-offer. Negotiate to find a mutually agreeable price.
+        5. Address each discrepancy. Get explicit customer confirmation for any deviations from their original request.
+    - **If the customer asks for product information:**
+        1. Retrieve details from your PDF knowledge base.
+        2. Provide the information, then ask the next UNADDRESSED requirement question.
+        The text to 'get_input' tool: "[Product Details from PDFs]... Now, [your next UNADDRESSED requirement question]?"
+    - **If no discrepancies or information requests, or after resolving them:**
+        1. Identify the NEXT UNADDRESSED requirement from the list below.
+        2. The text to 'get_input' tool should be this question.
+
+    **RULES:**
+    - Use knowledge search for EVERY customer question/statement
+    - Always provide relevant information before asking requirements
+    - Ask ONE requirement at a time
+    - Track which requirements are still needed
+    - Don't finish until ALL 8 are collected
+
+    **COMPLETION RULE:**
+    You must explicitly confirm you have collected ALL 8 requirements by saying:
+    "I have now collected all 8 required pieces of information:
+    1. Product Specifications: [summary]
+    2. Certifications: [summary]
+    3. Shelf Life: [summary]
+    4. INCOTERM: [summary]
+    5. Order Volume: [summary]
+    6. Packaging: [summary]
+    7. Payment Terms: [summary]
+    8. Target Price: [summary]
+    
+    Is this information complete and accurate?"
+
+    Only after customer confirms, you can complete this task.
+
+  expected_output: >
+    A natural, conversational interaction involving information provision from PDFs, detailed requirement gathering, and negotiation on points like certifications, shelf life, and price. The agent should clearly state its product's limitations based on the knowledge base, propose alternatives, and confirm all final terms with the customer. The final output is a structured summary of ALL agreed-upon requirements, highlighting any negotiated changes from the customer's initial request.
+  agent: receiver
+
+sales_planner_task:
+  description: >
+    Translate customer input into a structured task plan.
+    Highlight:
+    - Key product constraints (e.g., shelf life, certifications),
+    - Optional trade-offs the customer accepted,
+    - Preparation for the product matching and proposal generation phases.
+  expected_output: >
+    A task breakdown for the Analyzer and Compiler, including:
+    - Constraints to enforce,
+    - Optional flexibility ranges,
+    - Points needing fallback if no exact match exists.
+  agent: manager
+
+product_match_task:
+  description: >
+    Match the customer’s final requirements to existing supplier documentation.
+    For each requirement:
+    - Confirm whether it is fulfilled by any product,
+    - If not, suggest the closest valid alternative,
+    - Justify any suggested compromise (e.g., airtight packaging over vacuum).
+  expected_output: >
+    A list of matched product configurations with the following:
+    - Fulfilled vs. unfulfilled fields,
+    - Reasoning for any compromise,
+    - Clear mapping to supplier specs and product names.
+  agent: analyzer
+
+generate_proposal_task:
+  description: >
+    Generate a short proposal for customer review.
+    Include only the following points:
+    - Product Specifications
+    - Certifications
+    - Shelf Life
+    - INCOTERM
+    - Volume
+    - Packaging
+    - Payment Terms
+    - Final Price
+    - Any deviations from customer original request
+  expected_output: >
+    A markdown-formatted proposal document ready for client delivery.
+  agent: compiler
