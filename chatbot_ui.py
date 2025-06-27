@@ -1,23 +1,24 @@
+#  import necessary libraries
 import sys
 import os
-import threading
-import tkinter as tk
-from tkinter import scrolledtext
-from src import state
+import threading #cho phép chạy các tác vụ song song
+import tkinter as tk #thư viện giao diện người dùng
+from tkinter import scrolledtext #cho phép tạo vùng văn bản cuộn
+from src import state #file tự tạo để chia sẻ trạng thái hội thoại giữa AI và UI
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src"))) #thêm src vào đg dẫn tìm kiếm
 
-from ags_ai_agent.crew import AgsAiAgent
+from ags_ai_agent.crew import AgsAiAgent #import lớp trung tâm gọi AI crew hoạt động
 
 root = tk.Tk()
 root.title("Crew AI Chatbox")
 root.geometry("700x500")
 
 chat_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, state='disabled', font=("Arial", 11))
-chat_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+chat_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True) #tạo vùng văn bản cuộn để hiển thị hội thoại
 
 user_input = tk.Entry(root, font=("Arial", 12))
-user_input.pack(padx=10, pady=5, fill=tk.X)
+user_input.pack(padx=10, pady=5, fill=tk.X) #tạo ô nhập liệu cho người dùng
 
 def send_message():
     msg = user_input.get().strip()
@@ -32,14 +33,14 @@ def send_message():
         return
 
     # Nếu sẵn sàng nhận phản hồi
-    chat_area.config(state='normal')
-    chat_area.insert(tk.END, f"You: {msg}\n")
-    chat_area.config(state='disabled')
-    chat_area.see(tk.END)
+    chat_area.config(state='normal') #cho phép chỉnh sửa vùng văn bản
+    chat_area.insert(tk.END, f"You: {msg}\n") #hiển thị tin nhắn người dùng trong vùng văn bản
+    chat_area.config(state='disabled') #cập nhật vùng văn bản với tin nhắn người dùng tức dòng cuối cùng
+    chat_area.see(tk.END) #cuộn xuống cuối để hiển thị tin nhắn mới
 
-    state.last_response = msg
-    state.awaiting_input = False
-    user_input.delete(0, tk.END)
+    state.last_response = msg #lưu phản hồi của người dùng vào biến toàn cục
+    state.awaiting_input = False #đặt trạng thái chờ phản hồi của AI về False
+    user_input.delete(0, tk.END) #xóa nội dung ô nhập liệu sau khi gửi
 
 
 def run_crew():
