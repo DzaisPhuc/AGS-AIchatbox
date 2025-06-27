@@ -174,6 +174,23 @@ python main.py replay <task_id>
 - **Docker**: Containerization for database services
 - **Python**: Core development language
 
+
+### Chatbox
+1. **Start Milvus vector database**:
+```bash
+docker-compose up -d
+```
+2. **Power up virtual environment**
+```bash
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\venv\Scripts\Activate.ps1   
+```
+3. **Run Chatbox**
+```bash
+python chatbot_ui.py
+```
+- If you want to exit -> close GUI.
+
 ## Support
 
 For support, questions, or feedback:

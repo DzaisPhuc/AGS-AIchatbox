@@ -68,4 +68,11 @@ def check_bot_prompt():
 check_bot_prompt()
 run_crew()
 
+def on_close():
+    print("🔴 Đang thoát chương trình...")
+    root.destroy()         # Đóng cửa sổ giao diện
+    os._exit(0)            # Dừng tất cả luồng, kể cả CrewAI đang chạy nền
+
+root.protocol("WM_DELETE_WINDOW", on_close)  # Bắt sự kiện tắt cửa sổ
+
 root.mainloop()
